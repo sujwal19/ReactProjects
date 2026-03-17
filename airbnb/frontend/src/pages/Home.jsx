@@ -3,13 +3,16 @@ import axios from "axios";
 
 const Home = () => {
   const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const getListings = async () => {
     try {
-      const data = await axios.get(`http://localhost:5000/api/listings`);
-      setListings(data.data.data);
+      const res = await axios.get(`http://localhost:5000/api/listings`);
+      setListings(res.data.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -23,6 +26,7 @@ const Home = () => {
     <div>
       <h1>AirBnB Listings</h1>
 
+      {loading ? <h2>Loading...</h2> : ""}
       <div className="listing-container">
         {listings.map((listing) => (
           <div key={listing._id}>

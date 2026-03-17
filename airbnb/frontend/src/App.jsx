@@ -1,9 +1,11 @@
+import AddListing from "./pages/AddListing";
 import Home from "./pages/Home";
 
 const App = () => {
   return (
-    <div>
-      <Home />
+    <div className="add-listing">
+      <AddListing />
+      {/* <Home /> */}
     </div>
   );
 };
