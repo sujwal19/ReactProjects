@@ -3,14 +3,15 @@ import axios from "axios";
 
 const Home = () => {
   const [listings, setListings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const getListings = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(`http://localhost:5000/api/listings`);
       setListings(res.data.data);
     } catch (err) {
-      console.error(err);
+      alert("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -19,8 +20,6 @@ const Home = () => {
   useEffect(() => {
     getListings();
   }, []);
-
-  console.log(listings);
 
   return (
     <div>
