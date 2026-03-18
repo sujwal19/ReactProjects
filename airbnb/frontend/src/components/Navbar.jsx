@@ -4,7 +4,11 @@ const Navbar = () => {
   return (
     <div>
       <nav>
-        <div className="logo">airbnb</div>
+        <div className="logo">
+          <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+            airbnb
+          </Link>
+        </div>
         <div className="nav-half">
           <h5>
             <Link to="/">Home</Link>
