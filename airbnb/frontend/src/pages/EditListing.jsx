@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
 
-const ListingDetails = () => {
+const EditListing = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [listing, setListing] = useState(null);
@@ -36,34 +36,12 @@ const ListingDetails = () => {
   if (loading) return <h2>Loading...</h2>;
   if (!listing) return <h2>Listing not found</h2>;
 
-  const deleteHandler = async () => {
-    try {
-      await axios.delete(`http://localhost:5000/api/listings/${listing._id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      console.log("done"); // add toaster
-      navigate("/");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
     <div>
       <Link>Back to Home</Link>
       <ListingCard listing={listing} />
-
-      <div>
-        <h4>Owner Actions</h4>
-        <Link to={`/listing/${listing._id}/edit`}>
-          {owner && <button>Edit</button>}
-        </Link>
-        {owner && <button onClick={deleteHandler}>Delete</button>}
-      </div>
     </div>
   );
 };
 
-export default ListingDetails;
+export default EditListing;

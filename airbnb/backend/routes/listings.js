@@ -71,4 +71,95 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", protect, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid listing ID",
+      });
+    }
+
+    const listing = await Listing.findById(id);
+
+    if (!listing) {
+      return res.status(404).json({
+        success: false,
+        message: "Listing Not Found",
+      });
+    }
+
+    if (req.user !== listing.host.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    await Listing.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: "Listing deleted successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
+
+router.put("/:id", protect, async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid listing ID",
+      });
+    }
+
+    const listing = await Listing.findById(id);
+
+    if (!listing) {
+      return res.status(404).json({
+        success: false,
+        message: "Listing Not Found",
+      });
+    }
+
+    if (req.user !== listing.host.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { title, description, price } = req.body;
+
+    listing.title = title || listing.title;
+    listing.description = description || listing.description;
+    listing.price = price || listing.price;
+
+    await listing.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Listing Updated successfully",
+      data: listing,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+});
+
 export default router;

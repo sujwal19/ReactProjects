@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar";
 import AddListing from "./pages/AddListing";
+import EditListing from "./pages/EditListing";
 import Home from "./pages/Home";
 import ListingDetails from "./pages/ListingDetails";
 import Login from "./pages/Login";
@@ -14,6 +15,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/add" element={<AddListing />} />
         <Route path="listing/:id" element={<ListingDetails />} />
+        <Route path="listing/:id/edit" element={<EditListing />} />
       </Routes>
     </div>
   );
