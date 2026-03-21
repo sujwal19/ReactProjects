@@ -10,7 +10,18 @@ const AddListing = () => {
     title: "",
     description: "",
     price: "",
+    image: null,
   });
+  const [preview, setPreview] = useState(null);
+
+  const fileHandler = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file }));
+    }
+    const previewURL = URL.createObjectURL(file);
+    setPreview(previewURL);
+  };
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -31,13 +42,23 @@ const AddListing = () => {
         return;
       }
 
-      const res = await axios.post(server, formData, {
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("price", formData.price);
+
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const res = await axios.post(server, data, {
         headers: {
           Authorization: "Bearer " + token,
+          "Content-Type": "multipart/form-data",
         },
       });
       console.log(res.data);
-      setFormData({ title: "", description: "", price: "" });
+      setFormData({ title: "", description: "", price: "", image: "" });
       navigate("/");
     } catch (err) {
       console.log(err);
@@ -71,7 +92,22 @@ const AddListing = () => {
           onChange={inputHandler}
           value={formData.price}
         />
+        <input
+          type="file"
+          onChange={fileHandler}
+          name="image"
+          accept="image/*"
+        />
         <button>Add Listing</button>
+        {preview && (
+          <div>
+            <img
+              src={preview}
+              style={{ width: "auto", height: "200px" }}
+              alt=""
+            />
+          </div>
+        )}
       </form>
     </div>
   );

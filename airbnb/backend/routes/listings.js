@@ -161,17 +161,28 @@ router.put("/:id", protect, async (req, res) => {
       });
     }
 
-    const { title, description, price } = req.body;
+    const { title, description, price, removeImage } = req.body;
 
     listing.title = title || listing.title;
     listing.description = description || listing.description;
     listing.price = price || listing.price;
 
     if (req.file) {
-      listing.image = await uploadToCloudinary(
-        req.file.buffer,
-        "airbnb-images",
-      );
+      if (listing.image) {
+        const publicId = listing.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`airbnb_images/${publicId}`);
+      }
+
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "airbnb_images",
+      });
+      listing.image = result.secure_url;
+    } else if (removeImage === "true") {
+      if (listing.image) {
+        const publicId = listing.image.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(`airbnb_images/${publicId}`);
+      }
+      listing.image = null;
     }
 
     await listing.save();

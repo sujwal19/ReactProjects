@@ -13,7 +13,11 @@ const EditListing = () => {
     title: "",
     description: "",
     price: "",
+    image: null,
   });
+
+  const [currentImage, setCurrentImage] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   useEffect(() => {
     if (listing) {
@@ -21,9 +25,20 @@ const EditListing = () => {
         title: listing.title || "",
         description: listing.description || "",
         price: listing.price || "",
+        image: null,
       });
+      setCurrentImage(listing.image || null);
+      setPreview(null);
     }
   }, [listing]);
+
+  const fileHandler = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file }));
+    }
+    setPreview(URL.createObjectURL(file));
+  };
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
@@ -54,13 +69,33 @@ const EditListing = () => {
   const owner =
     listing && listing.host && user ? listing.host._id === user.id : false;
 
+  const removeImage = () => {
+    setCurrentImage(null);
+    setFormData((prev) => ({ ...prev, image: null }));
+    setPreview(null);
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      await axios.put(`http://localhost:5000/api/listings/${id}`, formData, {
+      const data = new FormData();
+      data.append("title", formData.title);
+      data.append("description", formData.description);
+      data.append("price", formData.price);
+
+      if (!formData.image && !currentImage) {
+        data.append("removeImage", "true");
+      }
+
+      if (formData.image) {
+        data.append("image", formData.image);
+      }
+
+      await axios.put(`http://localhost:5000/api/listings/${id}`, data, {
         headers: {
           Authorization: "Bearer " + token,
+          "Content-Type": "multipart/form-data",
         },
       });
 
@@ -104,6 +139,24 @@ const EditListing = () => {
           onChange={inputHandler}
           value={formData.price}
         />
+        <input
+          type="file"
+          onChange={fileHandler}
+          name="image"
+          accept="image/*"
+        />
+        {(preview || currentImage) && (
+          <div>
+            <img
+              src={preview || currentImage}
+              style={{ width: "200px", borderRadius: "8px" }}
+            />
+            <br />
+            <button type="button" onClick={removeImage}>
+              Remove Image
+            </button>
+          </div>
+        )}
         <button type="submit">Update Listing</button>
       </form>
     </div>
