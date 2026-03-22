@@ -27,20 +27,12 @@ const ListingDetails = () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
-
-  const owner =
-    listing && listing.host && user ? listing.host._id === user.id : false;
-
-  console.log(owner);
-
-  if (loading) return <h2>Loading...</h2>;
-  if (!listing) return <h2>Listing not found</h2>;
+  const owner = listing?.host?._id === user?.id;
 
   const deleteHandler = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this listing?",
     );
-
     if (!confirmDelete) return;
 
     try {
@@ -56,29 +48,55 @@ const ListingDetails = () => {
     }
   };
 
+  if (loading)
+    return <h2 className="mt-10 text-center text-gray-500">Loading...</h2>;
+  if (!listing)
+    return (
+      <h2 className="mt-10 text-center text-gray-500">Listing not found</h2>
+    );
+
   return (
-    <div>
-      <Link to="/">Back to Home</Link>
-      <h1>{listing.title}</h1>
+    <div className="flex min-h-screen justify-center bg-gray-100 p-5">
+      <div className="flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-white p-6 shadow-md">
+        <Link
+          to="/"
+          className="text-gray-500 transition-colors hover:text-[#4ECDC4]"
+        >
+          &larr; Back to Home
+        </Link>
 
-      {/* <img src={listing.image} alt={listing.title} /> */}
+        {listing.image && (
+          <div className="relative">
+            <img
+              src={listing.image}
+              className="h-96 w-full rounded-md object-cover"
+              alt=""
+            />
+          </div>
+        )}
+        <h1 className="text-3xl font-bold text-[#FF6B6B]">{listing.title}</h1>
+        <p className="text-gray-700">{listing.description}</p>
+        <h3 className="text-xl font-semibold text-[#FF6B6B]">
+          ${listing.price}
+        </h3>
+        <p className="text-gray-500">Hosted by: {listing.host?.name}</p>
 
-      <p>{listing.description}</p>
-
-      <h3>${listing.price}</h3>
-
-      <p>Hosted by: {listing.host?.name}</p>
-
-      {owner && (
-        <section>
-          <h4>Owner Actions</h4>
-          <Link to={`/listing/${listing._id}/edit`}>
-            <button>Edit</button>
-          </Link>
-
-          <button onClick={deleteHandler}>Delete</button>
-        </section>
-      )}
+        {owner && (
+          <section className="mt-4 flex gap-3">
+            <Link to={`/listing/${listing._id}/edit`}>
+              <button className="rounded-md bg-[#4ECDC4] px-4 py-2 font-semibold text-white transition-colors hover:bg-teal-500">
+                Edit
+              </button>
+            </Link>
+            <button
+              onClick={deleteHandler}
+              className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-red-600"
+            >
+              Delete
+            </button>
+          </section>
+        )}
+      </div>
     </div>
   );
 };

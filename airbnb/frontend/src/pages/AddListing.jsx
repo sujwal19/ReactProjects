@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,6 +13,8 @@ const AddListing = () => {
     image: null,
   });
   const [preview, setPreview] = useState(null);
+
+  const fileInputRef = useRef(null);
 
   const fileHandler = (e) => {
     const file = e.target.files[0];
@@ -29,6 +31,14 @@ const AddListing = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const removeFile = () => {
+    setPreview(null);
+    setFormData((prev) => ({ ...prev, image: null }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const submitHandler = async (e) => {
@@ -59,56 +69,81 @@ const AddListing = () => {
       });
       console.log(res.data);
       setFormData({ title: "", description: "", price: "", image: "" });
-      navigate("/");
+      setPreview(null);
+      navigate(`listing/${res.data.data._id}`);
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div>
-      <br />
-      <Link>Back to Home</Link>
-      <br />
-      <br />
-      <form onSubmit={submitHandler}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Title"
-          onChange={inputHandler}
-          value={formData.title}
-        />
-        <textarea
-          name="description"
-          placeholder="Enter Description"
-          onChange={inputHandler}
-          value={formData.description}
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Enter Price"
-          onChange={inputHandler}
-          value={formData.price}
-        />
-        <input
-          type="file"
-          onChange={fileHandler}
-          name="image"
-          accept="image/*"
-        />
-        <button>Add Listing</button>
-        {preview && (
-          <div>
-            <img
-              src={preview}
-              style={{ width: "auto", height: "200px" }}
-              alt=""
-            />
-          </div>
-        )}
-      </form>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-5">
+      <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-md">
+        <h1 className="mb-6 text-center text-2xl font-bold text-[#FF6B6B]">
+          Add New Listing
+        </h1>
+        <form onSubmit={submitHandler} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="title"
+            placeholder="Enter Title"
+            onChange={inputHandler}
+            value={formData.title}
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <textarea
+            name="description"
+            placeholder="Enter Description"
+            onChange={inputHandler}
+            value={formData.description}
+            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <input
+            type="number"
+            name="price"
+            placeholder="Enter Price"
+            onChange={inputHandler}
+            value={formData.price}
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <input
+            type="file"
+            onChange={fileHandler}
+            ref={fileInputRef}
+            name="image"
+            accept="image/*"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <button className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]">
+            Add Listing
+          </button>
+          {preview && (
+            <div className="relative mt-4 flex justify-center">
+              <img
+                src={preview}
+                className="h-48 w-full rounded-md object-cover"
+                alt={formData.title || "preview"}
+              />
+              <button
+                type="button"
+                onClick={removeFile}
+                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded bg-red-500 text-sm font-bold text-white transition-colors hover:bg-red-600"
+              >
+                ×
+              </button>
+            </div>
+          )}
+        </form>
+
+        <div className="mt-4 text-center">
+          <Link
+            to="/"
+            className="text-gray-500 transition-colors hover:text-[#4ECDC4]"
+          >
+            &larr; Back to Home
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };

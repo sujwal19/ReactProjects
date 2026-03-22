@@ -2,39 +2,39 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
-  const [loginInfo, setLoginInfo] = useState({
+  const [signupInfo, setSignupInfo] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
   const inputHandler = (e) => {
     const { name, value } = e.target;
-    setLoginInfo((prev) => ({
+    setSignupInfo((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleLogin = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    const { email, password } = loginInfo;
+    const { name, email, password } = signupInfo;
 
-    if (!email || !password) {
-      return console.log("Bad Field");
+    if (!name || !email || !password) {
+      return alert("Please fill all fields");
     }
 
     try {
-      const url = "http://localhost:5000/api/auth/login";
-      const response = await axios.post(url, loginInfo);
-      localStorage.setItem("token", response.data.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data.data.user));
+      const url = "http://localhost:5000/api/auth/register";
+      const response = await axios.post(url, signupInfo);
       console.log(response.data);
-      navigate("/");
+      setSignupInfo({ name: "", email: "", password: "" });
+      navigate("/login");
     } catch (error) {
-      alert("Login failed: " + error.message);
+      alert(error.response?.data?.message || error.message);
     }
   };
 
@@ -42,16 +42,25 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-5">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-md">
         <h1 className="mb-6 text-center text-3xl font-bold text-[#FF6B6B]">
-          Login to StayEase
+          Signup to StayEase
         </h1>
 
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form onSubmit={submitHandler} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Enter Name"
+            onChange={inputHandler}
+            value={signupInfo.name}
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+
           <input
             type="text"
             name="email"
             placeholder="Enter Email"
             onChange={inputHandler}
-            value={loginInfo.email}
+            value={signupInfo.email}
             className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
           />
           <input
@@ -59,21 +68,23 @@ const Login = () => {
             name="password"
             placeholder="Enter Password"
             onChange={inputHandler}
-            value={loginInfo.password}
+            value={signupInfo.password}
             className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
           />
+
           <button className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]">
-            Login
+            Signup
           </button>
         </form>
-        <div className="mt-4 text-center text-gray-500">
-          <Link to="/" className="transition-colors hover:text-[#4ECDC4]">
-            &larr; Back to Home
+        <p className="mt-4 text-center text-gray-500">
+          Already have an account?
+          <Link to="/login" className="text-[#4ECDC4] hover:underline">
+            Login
           </Link>
-        </div>
+        </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Signup;

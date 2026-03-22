@@ -40,71 +40,39 @@ const Home = () => {
     }
   };
 
-  if (loading) return <h2>Loading...</h2>;
-
-  //   function debounceTODO() {
-  //   const fetchListings = async (query = "") => {
-  //     setLoading(true);
-  //     try {
-  //       const res = await axios.get(
-  //         `http://localhost:5000/api/listings?q=${query}`,
-  //       );
-  //       setListings(res.data.data);
-  //     } catch (err) {
-  //       console.error(err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   const debounce = (func, delay) => {
-  //     let timer;
-  //     return (...args) => {
-  //       clearTimeout(timer);
-  //       timer = setTimeout(() => {
-  //         func(...args);
-  //       }, delay);
-  //     };
-  //   };
-
-  //   const debouncedFetch = useCallback(debounce(fetchListings, 500), []);
-
-  //   const handleChange = (e) => {
-  //     const value = e.target.value;
-  //     setSearchInput(value);
-  //     debouncedFetch(value); // trigger search after 500ms
-  //   };
-  // }
+  if (loading)
+    return <h2 className="mt-10 text-center text-gray-500">Loading...</h2>;
 
   return (
-    <div>
-      <h1>AirBnB Listings</h1>
+    <div className="min-h-screen bg-gray-100 p-5">
+      <h1 className="mb-6 text-3xl font-bold text-[#FF6B6B]">Discover Stays</h1>
 
-      <form style={{ display: "flex" }} onSubmit={searchSubmitHandler}>
+      <form onSubmit={searchSubmitHandler} className="mb-8 flex max-w-md gap-2">
         <input
           type="text"
           placeholder="Search Apartment..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
+          className="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
         />
-        <button>Search</button>
+        <button className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]">
+          Search
+        </button>
       </form>
 
-      <div className="listing-container">
-        {listings.length === 0 ? (
-          <h2>No result for search input "{searchInput}"</h2>
-        ) : (
-          listings.map((listing) => (
-            <Link
-              key={listing._id}
-              to={`/listing/${listing._id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
+      {listings.length === 0 ? (
+        <div className="mt-20 text-center text-gray-500">
+          No listings found 😢 Try again later.
+        </div>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {listings.map((listing) => (
+            <Link key={listing._id} to={`/listing/${listing._id}`}>
               <ListingCard key={listing._id} listing={listing} />
             </Link>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

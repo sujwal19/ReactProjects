@@ -46,3 +46,15 @@ airbnb-clone/
    PORT=5000
    MONGO_URI=mongodb://localhost:27017/airbnb
    JWT_SECRET=mysecretkey
+
+📝 Description (resume / project)
+
+Short version:
+
+A full-stack Airbnb-inspired platform where users can list, search, and manage rental properties with authentication and image uploads.
+
+📝 Slightly better version (for portfolio)
+
+StayEase is a full-stack MERN application that allows users to create, explore, and manage property listings with secure authentication, image uploads, and ownership-based access control.
+
+Stay made simple”

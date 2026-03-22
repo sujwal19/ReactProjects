@@ -134,7 +134,7 @@ router.delete("/:id", protect, async (req, res) => {
   }
 });
 
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", protect, upload.single("image"), async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -167,22 +167,31 @@ router.put("/:id", protect, async (req, res) => {
     listing.description = description || listing.description;
     listing.price = price || listing.price;
 
-    if (req.file) {
-      if (listing.image) {
-        const publicId = listing.image.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`airbnb_images/${publicId}`);
+    // Remove image if requested
+    if (removeImage === "true" && listing.image) {
+      if (listing.imagePublicId) {
+        await cloudinary.uploader.destroy(listing.imagePublicId);
       }
 
-      const result = await cloudinary.uploader.upload(req.file.path, {
-        folder: "airbnb_images",
-      });
-      listing.image = result.secure_url;
-    } else if (removeImage === "true") {
-      if (listing.image) {
-        const publicId = listing.image.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(`airbnb_images/${publicId}`);
-      }
       listing.image = null;
+      listing.imagePublicId = null;
+    }
+
+    // Upload new image if exists
+    if (req.file) {
+      // Delete old image first
+      if (listing.imagePublicId)
+        await cloudinary.uploader.destroy(listing.imagePublicId);
+
+      // Upload new image using your helper
+      const uploadedURL = await uploadToCloudinary(
+        req.file.buffer,
+        "airbnb_images",
+      );
+      listing.image = uploadedURL;
+
+      // Store publicId for future deletion
+      listing.imagePublicId = uploadedURL.split("/").pop().split(".")[0];
     }
 
     await listing.save();

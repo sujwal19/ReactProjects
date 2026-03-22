@@ -5,13 +5,15 @@ import Home from "./pages/Home";
 import ListingDetails from "./pages/ListingDetails";
 import Login from "./pages/Login";
 import { Routes, Route } from "react-router-dom";
+import Signup from "./pages/Signup";
 
 const App = () => {
   return (
-    <div className="add-listing">
+    <div className="add-listing bg-[#F7F7F7]">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/add" element={<AddListing />} />
         <Route path="listing/:id" element={<ListingDetails />} />

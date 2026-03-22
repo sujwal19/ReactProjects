@@ -1,11 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ListingCard from "../components/ListingCard";
 
 const EditListing = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -18,35 +19,12 @@ const EditListing = () => {
 
   const [currentImage, setCurrentImage] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [isImageRemoved, setIsImageRemoved] = useState(false);
 
-  useEffect(() => {
-    if (listing) {
-      setFormData({
-        title: listing.title || "",
-        description: listing.description || "",
-        price: listing.price || "",
-        image: null,
-      });
-      setCurrentImage(listing.image || null);
-      setPreview(null);
-    }
-  }, [listing]);
+  const fileInputRef = useRef(null);
 
-  const fileHandler = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, image: file }));
-    }
-    setPreview(URL.createObjectURL(file));
-  };
-
-  const inputHandler = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   const getListing = async () => {
     setLoading(true);
@@ -63,16 +41,43 @@ const EditListing = () => {
     getListing();
   }, [id]);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const token = localStorage.getItem("token");
+  useEffect(() => {
+    if (listing) {
+      setFormData({
+        title: listing.title || "",
+        description: listing.description || "",
+        price: listing.price || "",
+        image: null,
+      });
+      setCurrentImage(listing.image || null);
+      setPreview(null);
+      setIsImageRemoved(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }, [listing]);
 
-  const owner =
-    listing && listing.host && user ? listing.host._id === user.id : false;
+  const owner = listing?.host?._id === user?.id;
+
+  const inputHandler = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const fileHandler = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file }));
+      setPreview(URL.createObjectURL(file));
+      setIsImageRemoved(false); // reset remove flag if new file is chosen
+    }
+  };
 
   const removeImage = () => {
+    setPreview(null);
     setCurrentImage(null);
     setFormData((prev) => ({ ...prev, image: null }));
-    setPreview(null);
+    setIsImageRemoved(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const submitHandler = async (e) => {
@@ -84,13 +89,8 @@ const EditListing = () => {
       data.append("description", formData.description);
       data.append("price", formData.price);
 
-      if (!formData.image && !currentImage) {
-        data.append("removeImage", "true");
-      }
-
-      if (formData.image) {
-        data.append("image", formData.image);
-      }
+      if (formData.image) data.append("image", formData.image);
+      if (isImageRemoved) data.append("removeImage", "true");
 
       await axios.put(`http://localhost:5000/api/listings/${id}`, data, {
         headers: {
@@ -100,65 +100,100 @@ const EditListing = () => {
       });
 
       alert("Listing updated successfully");
+      setIsImageRemoved(false);
       navigate(`/listing/${id}`);
     } catch (err) {
-      alert("Error updating listing");
+      alert("Error updating listing", err.message);
     }
   };
 
-  if (loading) return <h2>Loading...</h2>;
-  if (!listing) return <h2>Listing not found</h2>;
-
-  if (!owner) return <h2>You are not authorized to edit this listing</h2>;
-
+  if (loading)
+    return <h2 className="mt-10 text-center text-gray-500">Loading...</h2>;
+  if (!listing)
+    return (
+      <h2 className="mt-10 text-center text-gray-500">Listing not found</h2>
+    );
+  if (!owner)
+    return (
+      <h2 className="mt-10 text-center text-gray-500">
+        You are not authorized to edit this listing
+      </h2>
+    );
   return (
-    <div>
-      <br />
-      <Link to="/">Back to Home</Link>
-      <br />
-      <ListingCard listing={listing} />
-      <br />
-      <form onSubmit={submitHandler}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Title"
-          onChange={inputHandler}
-          value={formData.title}
-        />
-        <textarea
-          name="description"
-          placeholder="Enter Description"
-          onChange={inputHandler}
-          value={formData.description}
-        />
-        <input
-          type="number"
-          name="price"
-          placeholder="Enter Price"
-          onChange={inputHandler}
-          value={formData.price}
-        />
-        <input
-          type="file"
-          onChange={fileHandler}
-          name="image"
-          accept="image/*"
-        />
-        {(preview || currentImage) && (
-          <div>
-            <img
-              src={preview || currentImage}
-              style={{ width: "200px", borderRadius: "8px" }}
-            />
-            <br />
-            <button type="button" onClick={removeImage}>
-              Remove Image
-            </button>
+    <div className="flex min-h-screen justify-center bg-gray-100 p-5">
+      <div className="flex w-full max-w-6xl flex-col gap-6 lg:flex-row">
+        <div className="flex items-center justify-center lg:w-1/2">
+          <div className="w-full max-w-sm">
+            <ListingCard listing={listing} />
           </div>
-        )}
-        <button type="submit">Update Listing</button>
-      </form>
+        </div>
+        <form
+          onSubmit={submitHandler}
+          className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-md lg:w-1/2"
+        >
+          <h2 className="text-2xl font-bold text-[#FF6B6B]">Edit Listing</h2>
+          <input
+            type="text"
+            name="title"
+            placeholder="Enter Title"
+            onChange={inputHandler}
+            value={formData.title}
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <textarea
+            name="description"
+            placeholder="Enter Description"
+            onChange={inputHandler}
+            value={formData.description}
+            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <input
+            type="number"
+            name="price"
+            placeholder="Enter Price"
+            onChange={inputHandler}
+            value={formData.price}
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          <input
+            type="file"
+            onChange={fileHandler}
+            ref={fileInputRef}
+            name="image"
+            accept="image/*"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          />
+          {(preview || currentImage) && (
+            <div className="relative mt-2 h-48 w-full">
+              <img
+                src={preview || currentImage}
+                className="h-full w-full rounded-md object-cover"
+                alt="Listing Preview"
+              />
+              <br />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white transition-colors hover:bg-red-600"
+              >
+                x
+              </button>
+            </div>
+          )}
+          <button
+            type="submit"
+            className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]"
+          >
+            Update Listing
+          </button>
+          <Link
+            to="/"
+            className="mt-2 text-gray-500 transition-colors hover:text-[#4ECDC4]"
+          >
+            &larr; Back to Home
+          </Link>
+        </form>
+      </div>
     </div>
   );
 };
