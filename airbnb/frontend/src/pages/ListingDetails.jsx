@@ -57,7 +57,7 @@ const ListingDetails = () => {
     );
 
   return (
-    <div className="flex min-h-screen justify-center bg-gray-100 p-5">
+    <div className="flex min-h-screen justify-center bg-[#F3F4F6] p-5">
       <div className="flex w-full max-w-3xl flex-col gap-6 rounded-xl bg-white p-6 shadow-md">
         <Link
           to="/"
@@ -75,25 +75,25 @@ const ListingDetails = () => {
             />
           </div>
         )}
-        <h1 className="text-3xl font-bold text-[#FF6B6B]">{listing.title}</h1>
-        <p className="text-gray-700">{listing.description}</p>
-        <h3 className="text-xl font-semibold text-[#FF6B6B]">
+        <h1 className="text-3xl font-bold text-[#4CA3DD]">{listing.title}</h1>
+        <p className="text-[#6B7280]">{listing.description}</p>
+        <h3 className="text-xl font-semibold text-[#4CA3DD]">
           ${listing.price}
         </h3>
-        <p className="text-gray-500">
+        <p className="text-[#6B7280]">
           Hosted by: {formatName(listing.host?.name)}
         </p>
 
         {owner && (
           <section className="mt-4 flex gap-3">
             <Link to={`/listing/${listing._id}/edit`}>
-              <button className="rounded-md bg-[#4ECDC4] px-4 py-2 font-semibold text-white transition-colors hover:bg-teal-500">
+              <button className="rounded-md bg-[#4CA3DD] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#3B8AC4]">
                 Edit
               </button>
             </Link>
             <button
               onClick={deleteHandler}
-              className="rounded-md bg-red-500 px-4 py-2 font-semibold text-white transition-colors hover:bg-red-600"
+              className="rounded-md bg-[#EF4444] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#ba2222]"
             >
               Delete
             </button>

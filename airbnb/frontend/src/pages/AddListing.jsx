@@ -71,16 +71,16 @@ const AddListing = () => {
       toast.success("Listing Added!");
       setFormData({ title: "", description: "", price: "", image: "" });
       setPreview(null);
-      navigate(`listing/${res.data.data._id}`);
+      navigate(`/listing/${res.data.data._id}`);
     } catch (err) {
-      toast.success("Error Adding Listing!");
+      toast.error("Error Adding Listing!");
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-5">
       <div className="w-full max-w-lg rounded-xl bg-white p-8 shadow-md">
-        <h1 className="mb-6 text-center text-2xl font-bold text-[#FF6B6B]">
+        <h1 className="mb-6 text-center text-2xl font-bold text-[#4CA3DD]">
           Add New Listing
         </h1>
         <form onSubmit={submitHandler} className="flex flex-col gap-4">
@@ -97,7 +97,7 @@ const AddListing = () => {
             placeholder="Enter Description"
             onChange={inputHandler}
             value={formData.description}
-            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4CA3DD] focus:outline-none"
           />
           <input
             type="number"
@@ -105,7 +105,7 @@ const AddListing = () => {
             placeholder="Enter Price"
             onChange={inputHandler}
             value={formData.price}
-            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4CA3DD] focus:outline-none"
           />
           <input
             type="file"
@@ -113,9 +113,9 @@ const AddListing = () => {
             ref={fileInputRef}
             name="image"
             accept="image/*"
-            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4CA3DD] focus:outline-none"
           />
-          <button className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]">
+          <button className="rounded-md bg-[#4CA3DD] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#3B8AC4]">
             Add Listing
           </button>
           {preview && (
@@ -128,7 +128,7 @@ const AddListing = () => {
               <button
                 type="button"
                 onClick={removeFile}
-                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded bg-red-500 text-sm font-bold text-white transition-colors hover:bg-red-600"
+                className="absolute top-2 right-2 flex h-6 w-6 items-center justify-center rounded bg-[#EF4444] text-sm font-bold text-white transition-colors hover:bg-red-600"
               >
                 ×
               </button>

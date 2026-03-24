@@ -107,15 +107,15 @@ npm start
 
 ### 🏠 Home Page
 
-![Home](./screenshots/home.png)
+![Home](./screenshots/home.jpeg)
 
 ### 📄 Listing Details
 
-![Details](./screenshots/details.png)
+![Details](./screenshots/details.jpeg)
 
 ### ➕ Add Listing
 
-![Add](./screenshots/add.png)
+![Add](./screenshots/add.jpeg)
 
 ---
 

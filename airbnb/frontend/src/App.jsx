@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 
 const App = () => {
   return (
-    <div className="add-listing bg-[#F7F7F7]">
+    <div className="add-listing">
       <Toaster
         position="top-right"
         toastOptions={{

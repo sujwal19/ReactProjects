@@ -132,21 +132,21 @@ const EditListing = () => {
           onSubmit={submitHandler}
           className="flex flex-col gap-4 rounded-xl bg-white p-6 shadow-md lg:w-1/2"
         >
-          <h2 className="text-2xl font-bold text-[#FF6B6B]">Edit Listing</h2>
+          <h2 className="text-2xl font-bold text-[#3B8AC4]">Edit Listing</h2>
           <input
             type="text"
             name="title"
             placeholder="Enter Title"
             onChange={inputHandler}
             value={formData.title}
-            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#3B8AC4] focus:outline-none"
           />
           <textarea
             name="description"
             placeholder="Enter Description"
             onChange={inputHandler}
             value={formData.description}
-            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="h-24 resize-none rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#3B8AC4] focus:outline-none"
           />
           <input
             type="number"
@@ -154,7 +154,7 @@ const EditListing = () => {
             placeholder="Enter Price"
             onChange={inputHandler}
             value={formData.price}
-            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#3B8AC4] focus:outline-none"
           />
           <input
             type="file"
@@ -162,7 +162,7 @@ const EditListing = () => {
             ref={fileInputRef}
             name="image"
             accept="image/*"
-            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+            className="rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#3B8AC4] focus:outline-none"
           />
           {(preview || currentImage) && (
             <div className="relative mt-2 h-48 w-full">
@@ -183,13 +183,13 @@ const EditListing = () => {
           )}
           <button
             type="submit"
-            className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]"
+            className="rounded-md bg-[#3B8AC4] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#3B8AC4]"
           >
             Update Listing
           </button>
           <Link
             to="/"
-            className="mt-2 text-gray-500 transition-colors hover:text-[#4ECDC4]"
+            className="mt-2 text-gray-500 transition-colors hover:text-[#3B8AC4]"
           >
             &larr; Back to Home
           </Link>

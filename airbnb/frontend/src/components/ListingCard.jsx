@@ -16,13 +16,13 @@ const ListingCard = ({ listing }) => {
       )}
 
       <div className="p-4">
-        <h3 className="truncate text-lg font-bold text-gray-900">
+        <h3 className="truncate text-lg font-bold text-[#111827]">
           {listing.title}
         </h3>
-        <p className="mt-1 line-clamp-2 text-sm text-gray-500">
+        <p className="mt-1 line-clamp-2 text-sm text-[#6B7280]">
           {listing.description}
         </p>
-        <p className="mt-2 font-semibold text-red-500">
+        <p className="mt-2 font-semibold text-[#4CA3DD]">
           ${listing.price}/night
         </p>
         <p className="mt-3 inline-block rounded-full bg-gray-100 px-3 py-1 text-xs text-gray-700">

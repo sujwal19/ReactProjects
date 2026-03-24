@@ -45,8 +45,8 @@ const Home = () => {
     return <h2 className="mt-10 text-center text-gray-500">Loading...</h2>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
-      <h1 className="mb-6 text-3xl font-bold text-[#FF6B6B]">Discover Stays</h1>
+    <div className="min-h-screen bg-[#F3F4F6] p-5">
+      <h1 className="mb-6 text-3xl font-bold text-[#4CA3DD]">Discover Stays</h1>
 
       <form onSubmit={searchSubmitHandler} className="mb-8 flex max-w-md gap-2">
         <input
@@ -54,15 +54,15 @@ const Home = () => {
           placeholder="Search Apartment..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4ECDC4] focus:outline-none"
+          className="flex-1 rounded-md border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-[#4CA3DD] focus:outline-none"
         />
-        <button className="rounded-md bg-[#FF6B6B] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#e55b5b]">
+        <button className="rounded-md bg-[#4CA3DD] px-4 py-2 font-semibold text-white transition-colors hover:bg-[#3B8AC4]">
           Search
         </button>
       </form>
 
       {listings.length === 0 ? (
-        <div className="mt-20 text-center text-gray-500">
+        <div className="mt-20 text-center text-[#111827]">
           No listings found 😢 Try again later.
         </div>
       ) : (
